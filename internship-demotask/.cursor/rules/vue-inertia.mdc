@@ -1,0 +1,81 @@
+---
+description: Vue + Inertia.js patterns
+globs:
+    - "**/*.vue"
+alwaysApply: false
+---
+
+# VUE + INERTIA PATTERNS
+
+## Component Structure
+
+- All page components in `resources/js/Pages/`
+- Reusable components in `resources/js/Components/`
+- UseCompositionAPI with ` < s c ri p t setup>`
+
+## Inertia Rout ing
+
+```php
+/Backend (routes/web.php)
+Route:get('/users', f u n c t i o n () {
+r e t u r n Inertia::render('Users/Index',
+[ 'users' => User::all()
+]);
+});
+```
+
+```vue
+<!-- Frontend (resources/js/Pages/Users/Index.vue) -->
+<template>
+    <div>
+        <h1>{{ title }}</h1>
+        <div v-for="user in users" :key="user.id">
+            {{ user.name }}
+        </div>
+    </div>
+</template>
+<script setup>
+import { ref } from "vue";
+const props = defineProps({ users: Array });
+const title = ref("Users List");
+</script>
+```
+
+## Navigation
+
+```vue
+<!-- Use Link component -->
+<Link href="/dashboard">Dashboard</Link>
+<!-- NOT regular anchor -->
+<a href="/dashboard">Dashboard</a>
+❌
+```
+
+## Forms
+
+```vue
+<script setup>
+import { useForm } from "@inertiajs/vue3";
+const form = useForm({ name: "", email: "" });
+const submit = () => {
+    form.post("/users");
+};
+</script>
+<template>
+    <form @submit.prevent="submit">
+        <input v-model="form.name" />
+        <input v-model="form.email" />
+        <button type="submit">Submit</button>
+    </form>
+</template>
+```
+
+##Access Shared Data
+
+```vue
+<template>
+    <div v-if="$page.props.flash.message">
+        {{ $page.props.flash.message }}
+    </div>
+</template>
+```
